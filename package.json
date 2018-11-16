@@ -1,23 +1,30 @@
 {
-  "name": "Megafon",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
-  },
-  "dependencies": {
-    "react": "16.6.1",
-    "react-native": "0.57.5",
-    "react-navigation": "^2.18.2"
-  },
-  "devDependencies": {
-    "babel-jest": "23.6.0",
-    "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.49.2",
-    "react-test-renderer": "16.6.1"
-  },
-  "jest": {
-    "preset": "react-native"
-  }
+	"name": "Megafon",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"start": "node node_modules/react-native/local-cli/cli.js start",
+		"test": "jest",
+		"android-debug": "react-native run-android",
+		"android-debug-clean": "yarn clean-android && react-native run-android",
+		"android-release": "cd android && ./gradlew assembleRelease --stacktrace && yarn android-install-release",
+		"android-release-clean": "yarn clean-android && yarn android-release",
+		"clean-android": "cd android && ./gradlew clean",
+		"android-install-debug": "cd android/app/build/outputs/apk/debug && adb install app-debug.apk",
+		"android-install-release": "cd android/app/build/outputs/apk/release && adb install app-release.apk"
+	},
+	"dependencies": {
+		"react": "16.6.1",
+		"react-native": "0.57.5",
+		"react-navigation": "^2.18.2"
+	},
+	"devDependencies": {
+		"babel-jest": "23.6.0",
+		"jest": "23.6.0",
+		"metro-react-native-babel-preset": "0.49.2",
+		"react-test-renderer": "16.6.1"
+	},
+	"jest": {
+		"preset": "react-native"
+	}
 }
