@@ -1,12 +1,54 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet, Animated,
-         TouchableWithoutFeedback } from 'react-native';
+         TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 
 const tableImage = require('app/Assets/Images/table.png');
 const playerImage = require('app/Assets/Images/player.png');
 const phoneOffImage = require('app/Assets/Images/phone_off.png');
 const phoneOnImage = require('app/Assets/Images/phone_on.png');
 const headerPhoneImage = require('app/Assets/Images/header_phone.png');
+
+class FadeWrapper extends Component {
+    state = {
+        opacity: new Animated.Value(0),
+        isInactive: true
+    };
+
+    fadeIn = (time, callback = null) => {
+        Animated.timing(this.state.opacity,
+            {
+                toValue: 1,
+                duration: time
+            }
+        ).start(() => {
+            this.setState({...this.state, isInactive: false});
+            if (callback) 
+                callback();
+        });
+    };
+
+    fadeOut = (time, callback = null) => {
+        Animated.timing(this.state.opacity,
+            {
+                toValue: 0,
+                duration: time
+            }
+        ).start(() => {
+            this.setState({...this.state, isInactive: true});
+            if (callback)
+                callback();
+        });
+    }
+
+    render() {
+        return(
+            <Animated.View opacity={this.state.opacity}
+            style={{...this.props.style}} disabled={this.state.isInactive}>
+                {this.props.children}
+            </Animated.View>
+        );
+    }
+}
 
 class PhoneRenderer extends Component {
     render() {
@@ -25,19 +67,7 @@ class Game extends Component {
         question: 'А? А? А? А?А? А? А? А?А? А? А? А?А? А? А? А?А? А? А? А?А? А? А? А?',
         money: 10000,
         difference: '-200',
-        callsAmount: 25,
-        fades: {
-            circle_1: new Animated.Value(0),
-            circle_2: new Animated.Value(0),
-            circle_3: new Animated.Value(0),
-            circle_b1: new Animated.Value(0),
-            circle_b2: new Animated.Value(0),
-            questionText: new Animated.Value(0)
-        },
-        positions: {
-            yesButton: new Animated.Value(0),
-            noButton: new Animated.Value(0)
-        }
+        callsAmount: 0
     }
 
     mapStateToAnimIndexes = {
@@ -46,24 +76,41 @@ class Game extends Component {
         2: 'circle_3',
         3: 'circle_b1',
         4: 'circle_b2',
-        5: 'questionText'
+        5: 'questionText',
+        6: 'yesText',
+        7: 'noText'
     }
 
-    startFade = (time, animIndex = 0) => {
-        if (animIndex == 6)
+    startFadeIn = (time, animIndex = 0) => {
+        if (animIndex == 5) {
+            this.refs[this.mapStateToAnimIndexes[5]].fadeIn(time);
+            this.refs[this.mapStateToAnimIndexes[6]].fadeIn(time);
+            this.refs[this.mapStateToAnimIndexes[7]].fadeIn(time);
             return;
+        }
 
-        Animated.timing(this.state.fades[this.mapStateToAnimIndexes[animIndex]],
-            {
-                toValue: 1,
-                duration: time
-            }
-        ).start(this.startFade(time, animIndex + 1));
+        this.refs[this.mapStateToAnimIndexes[animIndex]].fadeIn(time, () => {
+            this.startFadeIn(time, animIndex + 1);
+        });
+    }
+
+    startFadeOut = (time) => {
+        for (let i = 0; i < 8; ++i)
+            this.refs[this.mapStateToAnimIndexes[i]].fadeOut(time);
+        this.setState({...this.state, callsAmount: this.state.callsAmount + 1})
+    }
+
+    yesAction = () => {
+        this.startFadeOut(200);
+    }
+
+    noAction = () => {
+        this.startFadeOut(200);
     }
 
     render() {
         return (
-            <TouchableWithoutFeedback onPress={() => this.startFade(0.3)}
+            <TouchableWithoutFeedback onPress={() => this.startFadeIn(200)}
                                       style={{ flex: 1 }}>
                 <View style={styles.container}>
                     <View style={styles.headerContainer}>
@@ -75,18 +122,29 @@ class Game extends Component {
                         <Text style={styles.callsAmountText}>{this.state.callsAmount}</Text>
                     </View>
 
-                    <Text style={styles.yesButton}>ДА</Text>
-                    <Text style={styles.noButton}>НЕТ</Text>
+                    <FadeWrapper ref={'yesText'} style={styles.yesButtonContainer}>
+                        <TouchableOpacity onPress={this.yesAction} style={{ flex: 1, justifyContent: 'center', 
+                        alignItems: 'center' }}>
+                            <Text style={styles.yesButton}>ДА</Text>
+                        </TouchableOpacity>
+                    </FadeWrapper>
+                    <FadeWrapper ref={'noText'} style={styles.noButtonContainer}>
+                        <TouchableOpacity onPress={this.noAction} style={{ flex: 1, justifyContent: 'center',
+                        alignItems: 'center' }}>
+                            <Text style={styles.noButton}>НЕТ</Text>
+                        </TouchableOpacity>
+                    </FadeWrapper>
 
-                    <View style={styles.questionTextContainer} opacity={this.state.fades.questionText}>
-                        <Text style={styles.questionText}>{this.state.question}</Text>
-                    </View>
+
+                    <FadeWrapper ref={'questionText'} style={styles.questionTextContainer}>
+                            <Text style={styles.questionText}>{this.state.question}</Text>
+                    </FadeWrapper>
                     
-                    <View style={styles.circle_b2} opacity={this.state.fades.circle_b2} />
-                    <View style={styles.circle_b1} opacity={this.state.fades.circle_b1} />
-                    <View style={styles.circle_3} opacity={this.state.fades.circle_3} />
-                    <View style={styles.circle_2} opacity={this.state.fades.circle_2} />
-                    <View style={styles.circle_1} opacity={this.state.fades.circle_1} />
+                    <FadeWrapper ref={'circle_b2'} style={styles.circle_b2} />
+                    <FadeWrapper ref={'circle_b1'} style={styles.circle_b1} />
+                    <FadeWrapper ref={'circle_3'} style={styles.circle_3} />
+                    <FadeWrapper ref={'circle_2'} style={styles.circle_2} />
+                    <FadeWrapper ref={'circle_1'} style={styles.circle_1} />
 
                     <Image source={playerImage} style={styles.player} />
                     <Image source={tableImage} style={styles.table} />
@@ -171,8 +229,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'roboto_bold',
         fontSize: 12,
-        color: 'white',
-        zIndex: 3
+        color: 'white'
     },
     questionTextContainer: {
         width: 205,
@@ -181,23 +238,28 @@ const styles = StyleSheet.create({
         left: 80,
         bottom: 340,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        zIndex: 3
     },
     yesButton: {
-        position: 'absolute',
-        left: 18,
-        bottom: 363,
         fontFamily: 'roboto_black',
         fontSize: 14,
         color: '#00A664'
     },
-    noButton: {
+    yesButtonContainer: {
         position: 'absolute',
-        right: 11,
+        left: 18,
         bottom: 363,
+    },
+    noButton: {
         fontFamily: 'roboto_black',
         fontSize: 14,
         color: '#582E91'
+    },
+    noButtonContainer: {
+        position: 'absolute',
+        right: 11,
+        bottom: 363,
     },
     headerContainer: {
         marginTop: 10,
