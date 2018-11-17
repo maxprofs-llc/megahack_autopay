@@ -5,10 +5,11 @@ import WebViewGame from 'app/Features/WebViewGame/WebViewGame.component';
 
 class WebViewGamePage extends Component {
     static navigationOptions = ({
-        headerStyle: {
-            backgroundColor: '#00B956'
-        },
-        headerTintColor: 'white'
+        // headerStyle: {
+        //     backgroundColor: '#00B956'
+        // },
+        // headerTintColor: 'white'
+        header: null
     })
     
     render() {
