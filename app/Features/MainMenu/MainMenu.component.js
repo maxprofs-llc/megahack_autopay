@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Image, ScrollView, Text,
-         StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, ScrollView, TouchableOpacity } from 'react-native';
+
+import styles from './MainMenu.styles';
 
 class MainMenu extends Component {
     render() {
@@ -16,20 +17,5 @@ class MainMenu extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    menu: {
-        resizeMode: 'contain',
-        flex: 1,
-        width: 360,
-        //height: 1334
-    },
-    button: {
-        width: 360,
-        height: 56,
-        position: 'absolute',
-        top: 654
-    }
-});
 
 export default MainMenu;
