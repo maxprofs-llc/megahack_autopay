@@ -26,7 +26,7 @@ function getNextQuestion() {
     let newIndex = Math.floor(Math.random() * size);
 
     let newQuestion = questions[newIndex];
-    delete questions[newIndex];
+    questions.splice(newIndex, 1);
 
     return newQuestion;
 }
@@ -70,11 +70,10 @@ class Game extends Component {
         isHandOn: false,
         emotion: 'serious',
         currentQuestion: {
-            question: '',
-            yes: { message: '' }
+            question: ''
         },
-        lastAction: 'yes',
-        money: 2000,
+        lastAction: '',
+        money: 10000,
         difference: '',
         callsAmount: 0,
         isFinal: false,
@@ -129,18 +128,20 @@ class Game extends Component {
         object.moveToDown(time);
     }
 
-    increaseMoney = (amount) => {
+    increaseMoney = (amount, action) => {
         this.setState({
             ...this.state, difference: '+' + amount,
-            money: this.state.money + amount, callsAmount: this.state.callsAmount + 1, isHandOn: false, isPhoneOn: false
+            money: this.state.money + amount, callsAmount: this.state.callsAmount + 1, 
+            isHandOn: false, isPhoneOn: false, lastAction: action, emotion: 'happy'
         });
         this.refs.differenceText.fadeInOut(FADE_IN_OUT_TIME, FADE_IN_OUT_THROTTLE);
     }
 
-    decreaseMoney = (amount) => {
+    decreaseMoney = (amount, action) => {
         this.setState({
             ...this.state, difference: amount+'',
-            money: this.state.money + amount, callsAmount: this.state.callsAmount + 1, isHandOn: false, isPhoneOn: false
+            money: this.state.money + amount, callsAmount: this.state.callsAmount + 1, 
+            isHandOn: false, isPhoneOn: false, lastAction: action, emotion: 'sad'
         });
         this.refs.differenceText.fadeInOut(FADE_IN_OUT_TIME, FADE_IN_OUT_THROTTLE);
     }
@@ -204,40 +205,48 @@ class Game extends Component {
 
     yesAction = () => {
         if (this.state.isFinal) {
-            this.commonFinalRoute();
-            return;
-        }
-
-        this.commonAnswerAction('yes');
-        if (this.state.currentQuestion.yes.money)
-            if (this.state.currentQuestion.yes.money > 0)
-                this.increaseMoney(this.state.currentQuestion.yes.money);
-            else
-                this.decreaseMoney(this.state.currentQuestion.yes.money);
-
-        if (this.state.currentQuestion.yes.money)
-            console.log(this.state.currentQuestion.yes);
-    }
-
-    noAction = () => {
-        this.state.lastAction = 'no';
-
-        if (this.state.isFinal) {
-            this.commonFinalRoute();
+            this.commonFinalRoute('yes');
             return;
         }
 
         this.commonAnswerAction();
-        if (this.state.currentQuestion.no.money)
-            if (this.state.currentQuestion.no.money > 0)
-                this.increaseMoney(this.state.currentQuestion.no.money);
+        if (this.state.currentQuestion.yes.money) {
+            if (this.state.currentQuestion.yes.money > 0)
+                this.increaseMoney(this.state.currentQuestion.yes.money, 'yes');
             else
-                this.decreaseMoney(this.state.currentQuestion.no.money);
+                this.decreaseMoney(this.state.currentQuestion.yes.money, 'yes');
+        }
+        else {
+            this.setState({
+                ...this.state, callsAmount: this.state.callsAmount + 1, 
+                isHandOn: false, isPhoneOn: false, lastAction: 'yes', emotion: 'serious'
+            });
+        }
+    }
+
+    noAction = () => {
+        if (this.state.isFinal) {
+            this.commonFinalRoute('no');
+            return;
+        }
+
+        this.commonAnswerAction();
+        if (this.state.currentQuestion.no.money) {
+            if (this.state.currentQuestion.no.money > 0)
+                this.increaseMoney(this.state.currentQuestion.no.money, 'no');
+            else
+                this.decreaseMoney(this.state.currentQuestion.no.money, 'no');
+        }
+        else {
+            this.setState({
+                ...this.state, callsAmount: this.state.callsAmount + 1, 
+                isHandOn: false, isPhoneOn: false, lastAction: 'no', emotion: 'serious'
+            });
+        }
     }
 
     onGameoverPress = () => {
-        this.startMoveToDown(500, this.refs.gameover);
-        this.setState({...this.state, isDescriptionOpen: true});
+        this.props.navigation.navigate('Result');
     }
 
     onDescriptionClose = () => {
@@ -245,7 +254,10 @@ class Game extends Component {
     }
 
     prepareMessage = () => {
+        if (!this.state.currentQuestion.yes || this.state.lastAction == '')
+            return '';
         
+        return this.state.currentQuestion[this.state.lastAction].message;
     }
 
     render() {
@@ -306,7 +318,7 @@ class Game extends Component {
 
                 {/* After question popup */}
                 <MoveWrapper ref={'afterQuestion'} style={styles.afterQuestionPopup}>
-                    <AfterQuestionView message={this.state.currentQuestion[this.state.lastAction].message} 
+                    <AfterQuestionView message={this.prepareMessage()} 
                                        pressCallback={this.onMessagePopupClose} />
                 </MoveWrapper>
                 
@@ -316,10 +328,6 @@ class Game extends Component {
                         <Image source={images.gameoverImage} style={styles.gameoverImage} />
                     </TouchableWithoutFeedback>
                 </MoveWrapper>
-                
-                {/* First modal */}
-                <DescriptionModal ref={'descriptionModal'} closeModal={this.onDescriptionClose} 
-                                  isOpen={this.state.isDescriptionOpen} />
             </View>
         );
     }

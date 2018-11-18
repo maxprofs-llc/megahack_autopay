@@ -19,19 +19,20 @@ const styles = StyleSheet.create({
         marginTop: 14,
         fontSize: 14,
         fontFamily: 'gtwalsheimpro_ultrabold',
-        color: 'white'
+        color: 'white',
+        zIndex: 2
     },
     okTouch: {
         position: 'relative',
         left: 217,
         marginTop: -30,
         width: 60,
-        height: 60
+        height: 60,
     },
     okText: {
         fontSize: 18,
         fontFamily: 'gtwalsheimpro_ultrabold',
-        color: 'white'
+        color: 'white',
     },
     okContainer: {
         width: 60,

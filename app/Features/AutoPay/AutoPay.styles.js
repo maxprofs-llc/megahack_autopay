@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 20,
-        color: '#731982'
+        color: 'white'
     }
 });
 

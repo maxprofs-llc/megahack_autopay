@@ -14,3 +14,4 @@ export const modalStartImage = require('app/Assets/Images/modal_start_instructio
 
 export const gameoverImage = require('app/Assets/Images/gameover.png');
 export const popupDetailsImage = require('app/Assets/Images/popup_details.png')
+export const popupAutopayImage = require('app/Assets/Images/popup_autopay.png')

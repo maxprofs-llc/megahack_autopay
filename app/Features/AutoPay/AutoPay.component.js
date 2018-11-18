@@ -11,7 +11,7 @@ class AutoPay extends Component {
             <View style={styles.container}>
                 <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.navigation.navigate('Game')}>
                     <View style={styles.button}>
-                        <Text style={styles.buttonText}>Game</Text>
+                        <Text style={styles.buttonText}>Играть!</Text>
                     </View>
                 </TouchableOpacity>
             </View>
