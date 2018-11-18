@@ -1,21 +1,36 @@
 import { StyleSheet } from 'react-native';
 
+export const BAD_COLOR = '#EB5A40';
+export const MIDDLE_COLOR = '#FFBD14';
+export const GOOD_COLOR = '#00B956';
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center'
+    }, 
+    afterQuestionPopup: {
+        
     },
     player: {
         width: 70,
         height: 109.95,
         marginBottom: -17,
+        zIndex: 1
+    },
+    playerFace: {
+        width: 37,
+        height: 47,
+        position: 'absolute',
+        left: 162,
+        bottom: 103,
         zIndex: 2
     },
     table: {
         width: 360,
         height: 72,
-        zIndex: 1
+        zIndex: 0
     },
     circle_1: {
         width: 14,
@@ -79,24 +94,26 @@ const styles = StyleSheet.create({
         zIndex: 3
     },
     yesButton: {
+        marginLeft: 18,
         fontFamily: 'roboto_black',
         fontSize: 14,
         color: '#00A664'
     },
     yesButtonContainer: {
         position: 'absolute',
-        left: 18,
-        bottom: 363,
+        left: 0,
+        bottom: 343,
     },
     noButton: {
+        marginRight: 11,
         fontFamily: 'roboto_black',
         fontSize: 14,
         color: '#582E91'
     },
     noButtonContainer: {
         position: 'absolute',
-        right: 11,
-        bottom: 363,
+        right: 0,
+        bottom: 343,
     },
     headerContainer: {
         marginTop: 10,
@@ -113,7 +130,7 @@ const styles = StyleSheet.create({
         width: 26,
         height: 26,
         borderRadius: 13,
-        backgroundColor: '#FFBD14'
+        backgroundColor: MIDDLE_COLOR
     },
     moneyText: {
         marginLeft: 14,
@@ -122,10 +139,11 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     differenceText: {
-        marginLeft: 12,
         fontFamily: 'roboto_bold',
-        fontSize: 18,
-        color: '#FFBD14'
+        fontSize: 18
+    },
+    differenceTextContainer: {
+        marginLeft: 12,
     },
     headerPhoneIcon: {
         marginTop: 2,

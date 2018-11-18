@@ -9,6 +9,14 @@ const styles = StyleSheet.create({
         bottom: 55,
         zIndex: 2
     },
+    handPhone: {
+        width: 12,
+        height: 22,
+        position: 'absolute',
+        left: 154,
+        bottom: 103,
+        zIndex: 4
+    }
 });
 
 export default styles;

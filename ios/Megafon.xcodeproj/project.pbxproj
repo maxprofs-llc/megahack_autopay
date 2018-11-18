@@ -40,6 +40,7 @@
 		02DF5AF8B7264A8B84C9C3F2 /* roboto_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 614FB484FF9D4EF1AC5C90D5 /* roboto_bold.ttf */; };
 		2B66C32C181E491FABCC6062 /* roboto_regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 549E6F3EC9964881AE958413 /* roboto_regular.ttf */; };
 		FAA6716A38524700876E8AAC /* roboto_black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DDB3DAF09CA844F794E0D153 /* roboto_black.ttf */; };
+		B308951E565C440983BBCF1B /* gtwalsheimpro_ultrabold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 31F90308D1A44794827C4F6C /* gtwalsheimpro_ultrabold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -348,6 +349,7 @@
 		614FB484FF9D4EF1AC5C90D5 /* roboto_bold.ttf */ = {isa = PBXFileReference; name = "roboto_bold.ttf"; path = "../app/Assets/Fonts/roboto_bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		549E6F3EC9964881AE958413 /* roboto_regular.ttf */ = {isa = PBXFileReference; name = "roboto_regular.ttf"; path = "../app/Assets/Fonts/roboto_regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		DDB3DAF09CA844F794E0D153 /* roboto_black.ttf */ = {isa = PBXFileReference; name = "roboto_black.ttf"; path = "../app/Assets/Fonts/roboto_black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		31F90308D1A44794827C4F6C /* gtwalsheimpro_ultrabold.ttf */ = {isa = PBXFileReference; name = "gtwalsheimpro_ultrabold.ttf"; path = "../app/Assets/Fonts/gtwalsheimpro_ultrabold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -615,6 +617,7 @@
 				614FB484FF9D4EF1AC5C90D5 /* roboto_bold.ttf */,
 				549E6F3EC9964881AE958413 /* roboto_regular.ttf */,
 				DDB3DAF09CA844F794E0D153 /* roboto_black.ttf */,
+				31F90308D1A44794827C4F6C /* gtwalsheimpro_ultrabold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1069,6 +1072,7 @@
 				02DF5AF8B7264A8B84C9C3F2 /* roboto_bold.ttf in Resources */,
 				2B66C32C181E491FABCC6062 /* roboto_regular.ttf in Resources */,
 				FAA6716A38524700876E8AAC /* roboto_black.ttf in Resources */,
+				B308951E565C440983BBCF1B /* gtwalsheimpro_ultrabold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
