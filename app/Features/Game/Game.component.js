@@ -11,9 +11,25 @@ import FadeWrapper from 'app/Components/FadeWrapper/FadeWrapper.component';
 import MoveWrapper from 'app/Components/MoveWrapper/MoveWrapper.component';
 import InstructionModal from 'app/Features/InstructionModal/InstructionModal.component';
 import AfterQuestionView from 'app/Features/AfterQuestionView/AfterQuestionView.component';
+import DescriptionModal from 'app/Features/DescriptionModal/DescriptionModal.component';
 
 /* All app image assets */
 import * as images from 'app/Services/images';
+
+/* Game questions */
+import q from 'app/Services/questions.json';
+let final = q.final;
+let questions = q.questions;
+
+function getNextQuestion() {
+    let size = questions.length;
+    let newIndex = Math.floor(Math.random() * size);
+
+    let newQuestion = questions[newIndex];
+    delete questions[newIndex];
+
+    return newQuestion;
+}
 
 /* Screen styles */
 import styles, { GOOD_COLOR, BAD_COLOR } from './Game.styles';
@@ -26,6 +42,8 @@ const FADE_IN_OUT_THROTTLE = 1000;
 const PHONE_BLINKING_FREQUENCY = 1000;
 
 const TIME_AFTER_INSTRUCTION = 1000;
+
+const MONEY_LIMIT = 2000;
 
 /* Blink anim intervalId */
 let phoneBlinkId = null;
@@ -51,10 +69,27 @@ class Game extends Component {
         isPhoneOn: false,
         isHandOn: false,
         emotion: 'serious',
-        question: 'Босс, ваш личный заработок за текущий отчетный период, в 2 раза больше, чем в прошлый, желаете реинвестировать разницу?',
-        money: 10000,
-        difference: '-200',
-        callsAmount: 0
+        currentQuestion: {
+            question: '',
+            yes: { message: '' }
+        },
+        lastAction: 'yes',
+        money: 2000,
+        difference: '',
+        callsAmount: 0,
+        isFinal: false,
+        finalTouches: 0,
+        testResult: {
+            volatile: 0,
+            inattentive: 0,
+            temporary: 0,
+            economical: 0,
+            practical: 0,
+            careless: 0,
+            busy: 0,
+            ideal: 0
+        },
+        isDescriptionOpen: false
     }
 
     mapStateToAnimIndexes = {
@@ -97,15 +132,15 @@ class Game extends Component {
     increaseMoney = (amount) => {
         this.setState({
             ...this.state, difference: '+' + amount,
-            money: this.state.money + amount, callsAmount: this.state.callsAmount + 1
+            money: this.state.money + amount, callsAmount: this.state.callsAmount + 1, isHandOn: false, isPhoneOn: false
         });
         this.refs.differenceText.fadeInOut(FADE_IN_OUT_TIME, FADE_IN_OUT_THROTTLE);
     }
 
     decreaseMoney = (amount) => {
         this.setState({
-            ...this.state, difference: '-' + amount,
-            money: this.state.money - amount, callsAmount: this.state.callsAmount + 1
+            ...this.state, difference: amount+'',
+            money: this.state.money + amount, callsAmount: this.state.callsAmount + 1, isHandOn: false, isPhoneOn: false
         });
         this.refs.differenceText.fadeInOut(FADE_IN_OUT_TIME, FADE_IN_OUT_THROTTLE);
     }
@@ -118,7 +153,6 @@ class Game extends Component {
     }
 
     incomingCall = () => {
-        this.backPhone();
         phoneBlinkId = setInterval(this.blinkAction, PHONE_BLINKING_FREQUENCY);
     }
 
@@ -127,14 +161,17 @@ class Game extends Component {
     }
 
     acceptCall = () => {
+        //get new question
+        let question = getNextQuestion();
+
         clearInterval(phoneBlinkId);
+        this.setState({...this.state, isHandOn: true, currentQuestion: question});
 
-        this.setState({...this.state, isHandOn: true});
+        if (this.state.money < MONEY_LIMIT) {
+            this.setState({...this.state, currentQuestion: final, isFinal: true, isHandOn: true})
+        }
+        
         this.startScaleIn(SCALE_IN_TIME);
-    }
-
-    backPhone = (callback) => {
-        this.setState({...this.state, isHandOn: false, isPhoneOn: false}, callback);
     }
 
     onInstructionClose = () => {
@@ -152,23 +189,63 @@ class Game extends Component {
         this.acceptCall();
     }
 
-    commonAnswerAction = (callback) => {
+    commonAnswerAction = () => {
         this.startScaleOut(SCALE_OUT_TIME);
         this.displayAfterQuestionPopup();
+    }
+
+    commonFinalRoute = (lastAction) => {
+        if (this.state.finalTouches == 2) {
+            this.startMoveToTop(500, 0, this.refs.gameover);
+        }
+
+        this.setState({ ...this.state, finalTouches: this.state.finalTouches + 1, lastAction: lastAction });
+    }
+
+    yesAction = () => {
+        if (this.state.isFinal) {
+            this.commonFinalRoute();
+            return;
+        }
+
+        this.commonAnswerAction('yes');
+        if (this.state.currentQuestion.yes.money)
+            if (this.state.currentQuestion.yes.money > 0)
+                this.increaseMoney(this.state.currentQuestion.yes.money);
+            else
+                this.decreaseMoney(this.state.currentQuestion.yes.money);
+
+        if (this.state.currentQuestion.yes.money)
+            console.log(this.state.currentQuestion.yes);
+    }
+
+    noAction = () => {
+        this.state.lastAction = 'no';
+
+        if (this.state.isFinal) {
+            this.commonFinalRoute();
+            return;
+        }
+
+        this.commonAnswerAction();
+        if (this.state.currentQuestion.no.money)
+            if (this.state.currentQuestion.no.money > 0)
+                this.increaseMoney(this.state.currentQuestion.no.money);
+            else
+                this.decreaseMoney(this.state.currentQuestion.no.money);
+    }
+
+    onGameoverPress = () => {
+        this.startMoveToDown(500, this.refs.gameover);
+        this.setState({...this.state, isDescriptionOpen: true});
+    }
+
+    onDescriptionClose = () => {
         
     }
 
-    yesAction = (action) => {
-        this.commonAnswerAction(this.increaseMoney(100));
+    prepareMessage = () => {
         
-
-
-    }
-
-    noAction = (action) => {
-        this.commonAnswerAction(this.decreaseMoney(100));
-        
-
     }
 
     render() {
@@ -208,7 +285,7 @@ class Game extends Component {
 
                 {/* Question */}
                 <ScaleWrapper ref={'questionText'} style={styles.questionTextContainer}>
-                    <Text style={styles.questionText}>{this.state.question}</Text>
+                    <Text style={styles.questionText}>{this.state.currentQuestion.question}</Text>
                 </ScaleWrapper>
 
                 {/* Circles */}
@@ -229,9 +306,20 @@ class Game extends Component {
 
                 {/* After question popup */}
                 <MoveWrapper ref={'afterQuestion'} style={styles.afterQuestionPopup}>
-                    <AfterQuestionView message={'Все отлично работает!'} pressCallback={this.onMessagePopupClose} />
+                    <AfterQuestionView message={this.state.currentQuestion[this.state.lastAction].message} 
+                                       pressCallback={this.onMessagePopupClose} />
                 </MoveWrapper>
-
+                
+                {/* Gameover overlay image */}
+                <MoveWrapper ref={'gameover'} style={styles.gameoverPopup}>
+                    <TouchableWithoutFeedback onPress={this.onGameoverPress}>
+                        <Image source={images.gameoverImage} style={styles.gameoverImage} />
+                    </TouchableWithoutFeedback>
+                </MoveWrapper>
+                
+                {/* First modal */}
+                <DescriptionModal ref={'descriptionModal'} closeModal={this.onDescriptionClose} 
+                                  isOpen={this.state.isDescriptionOpen} />
             </View>
         );
     }

@@ -11,3 +11,6 @@ export const emotionHappy = require('app/Assets/Images/emotion_happy.png');
 export const headerPhoneImage = require('app/Assets/Images/header_phone.png');
 
 export const modalStartImage = require('app/Assets/Images/modal_start_instruction.png');
+
+export const gameoverImage = require('app/Assets/Images/gameover.png');
+export const popupDetailsImage = require('app/Assets/Images/popup_details.png')

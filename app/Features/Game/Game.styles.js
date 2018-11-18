@@ -18,7 +18,27 @@ const styles = StyleSheet.create({
         top: 640,
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 4
+        zIndex: 2
+    },
+    gameoverPopup: {
+        width: 360,
+        height: 640,
+        position: 'absolute',
+        left: 0,
+        top: 640,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10
+    },
+    gameoverImage: {
+        width: 360,
+        height: 640
+    },
+    gameoverTouch: {
+        width: 360,
+        height: 640,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     player: {
         width: 70,
