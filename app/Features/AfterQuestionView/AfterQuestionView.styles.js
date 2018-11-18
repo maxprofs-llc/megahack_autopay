@@ -4,9 +4,6 @@ const styles = StyleSheet.create({
     container: {
         width: 276,
         height: 130,
-        position: 'absolute',
-        left: 44,
-        top: 210,
         justifyContent: 'flex-start',
         alignItems: 'flex-start'
     },
@@ -24,19 +21,25 @@ const styles = StyleSheet.create({
         fontFamily: 'gtwalsheimpro_ultrabold',
         color: 'white'
     },
+    okTouch: {
+        position: 'relative',
+        left: 217,
+        marginTop: -30,
+        width: 60,
+        height: 60
+    },
     okText: {
         fontSize: 18,
         fontFamily: 'gtwalsheimpro_ultrabold',
         color: 'white'
     },
     okContainer: {
-        position: 'relative',
-        left: 217,
-        top: 71,
         width: 60,
         height: 60,
         borderRadius: 30,
-        backgroundColor: '#731982'
+        backgroundColor: '#731982',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 

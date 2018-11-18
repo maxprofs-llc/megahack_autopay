@@ -12,6 +12,27 @@ const styles = StyleSheet.create({
     image: {
         width: 283,
         height: 496
+    },
+    buttonTouchContainer: {
+        position: 'absolute',
+        width: 212,
+        height: 37,
+        left: 35,
+        bottom: 26,
+        borderRadius: 5
+    },
+    buttonContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 212,
+        height: 37,
+        borderRadius: 5,
+        backgroundColor: '#00B956'
+    },
+    buttonText: {
+        fontFamily: 'roboto_bold',
+        fontSize: 12,
+        color: 'white'
     }
 });
 

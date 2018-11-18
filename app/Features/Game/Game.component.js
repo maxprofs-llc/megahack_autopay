@@ -27,6 +27,9 @@ const PHONE_BLINKING_FREQUENCY = 1000;
 
 const TIME_AFTER_INSTRUCTION = 1000;
 
+/* Blink anim intervalId */
+let phoneBlinkId = null;
+
 function Emotion(props) {
     let name;
     switch (props.emotionType) {
@@ -47,13 +50,11 @@ class Game extends Component {
     state = {
         isPhoneOn: false,
         isHandOn: false,
-        phoneBlinkId: null,
         emotion: 'serious',
         question: 'Босс, ваш личный заработок за текущий отчетный период, в 2 раза больше, чем в прошлый, желаете реинвестировать разницу?',
         money: 10000,
         difference: '-200',
-        callsAmount: 0,
-        isMessagePopupVisible: false
+        callsAmount: 0
     }
 
     mapStateToAnimIndexes = {
@@ -85,6 +86,14 @@ class Game extends Component {
             this.refs[this.mapStateToAnimIndexes[i]].scaleOut(time);
     }
 
+    startMoveToTop = (time, toY, object) => {
+        object.moveToTop(time, toY);
+    }
+
+    startMoveToDown = (time, object) => {
+        object.moveToDown(time);
+    }
+
     increaseMoney = (amount) => {
         this.setState({
             ...this.state, difference: '+' + amount,
@@ -108,8 +117,9 @@ class Game extends Component {
             return { color: BAD_COLOR }
     }
 
-    icomingCall = () => {
-        this.state.phoneBlinkId = setInterval(this.blinkAction, PHONE_BLINKING_FREQUENCY);
+    incomingCall = () => {
+        this.backPhone();
+        phoneBlinkId = setInterval(this.blinkAction, PHONE_BLINKING_FREQUENCY);
     }
 
     blinkAction = () => {
@@ -117,30 +127,48 @@ class Game extends Component {
     }
 
     acceptCall = () => {
-        if (this.state.phoneBlinkId)
-            clearInterval(this.state.phoneBlinkId);
+        clearInterval(phoneBlinkId);
 
-        this.setState({...this.state, isHandOn: true, phoneBlinkId: null});
+        this.setState({...this.state, isHandOn: true});
         this.startScaleIn(SCALE_IN_TIME);
     }
 
+    backPhone = (callback) => {
+        this.setState({...this.state, isHandOn: false, isPhoneOn: false}, callback);
+    }
+
     onInstructionClose = () => {
-        this.icomingCall();
+        this.incomingCall();
         setTimeout(this.acceptCall, TIME_AFTER_INSTRUCTION);
     }
 
+    displayAfterQuestionPopup = () => {
+        this.startMoveToTop(300, 210, this.refs.afterQuestion);
+        this.incomingCall();
+    }
+
     onMessagePopupClose = () => {
+        this.startMoveToDown(300, this.refs.afterQuestion);
+        this.acceptCall();
+    }
+
+    commonAnswerAction = (callback) => {
+        this.startScaleOut(SCALE_OUT_TIME);
+        this.displayAfterQuestionPopup();
         
     }
 
     yesAction = (action) => {
-        this.startScaleOut(SCALE_OUT_TIME);
-        this.increaseMoney(100);
+        this.commonAnswerAction(this.increaseMoney(100));
+        
+
+
     }
 
     noAction = (action) => {
-        this.startScaleOut(SCALE_OUT_TIME);
-        this.decreaseMoney(100);
+        this.commonAnswerAction(this.decreaseMoney(100));
+        
+
     }
 
     render() {
@@ -200,7 +228,7 @@ class Game extends Component {
                 <InstructionModal closeModal={this.onInstructionClose} />
 
                 {/* After question popup */}
-                <MoveWrapper>
+                <MoveWrapper ref={'afterQuestion'} style={styles.afterQuestionPopup}>
                     <AfterQuestionView message={'Все отлично работает!'} pressCallback={this.onMessagePopupClose} />
                 </MoveWrapper>
 

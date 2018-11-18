@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image } from 'react-native';
+import { Image, View, Text, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modalbox';
 
 import { modalStartImage } from 'app/Services/images';
@@ -11,6 +11,10 @@ class InstructionModal extends Component {
         isOpened: true
     }
 
+    closeModal = () => {
+        this.setState({ isOpened: false });
+    }
+
     render() {
         const {closeModal} = this.props;
 
@@ -18,6 +22,12 @@ class InstructionModal extends Component {
             <Modal isOpen={this.state.isOpened} onClosed={closeModal}
                 position={'center'} backButtonClose={true} style={styles.modal}>
                 <Image source={modalStartImage} style={styles.image} />
+
+                <TouchableOpacity style={styles.buttonTouchContainer} onPress={this.closeModal}>
+                    <View style={styles.buttonContainer}>
+                        <Text style={styles.buttonText}>Понял!</Text>
+                    </View>
+                </TouchableOpacity>
             </Modal>
         );
     }

@@ -4,7 +4,7 @@ import { Animated, Easing } from 'react-native';
 class MoveWrapper extends Component {
     state = {
         x: new Animated.Value(0),
-        y: new Animated.Value(0),
+        y: new Animated.Value(640),
         isInactive: true
     };
 
@@ -28,6 +28,19 @@ class MoveWrapper extends Component {
         });
     };
 
+    moveToTop = (time, toY, callback = null) => {
+        this.state.y.setValue(640);
+
+        Animated.timing(this.state.y, {
+            toValue: toY,
+            duration: time
+        }).start(() => {
+            if (callback)
+                callback();
+            isInactive = false;
+        });
+    }
+
     moveToDown = (time, callback = null) => {
         Animated.timing(this.state.y, {
             toValue: 640,
@@ -41,7 +54,7 @@ class MoveWrapper extends Component {
 
     render() {
         return (
-            <Animated.View opacity={this.state.opacity}
+            <Animated.View
                 style={{ ...this.props.style, top: this.state.y }} disabled={this.state.isInactive}>
                 {this.props.children}
             </Animated.View>

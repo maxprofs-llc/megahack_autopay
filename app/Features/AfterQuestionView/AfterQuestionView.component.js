@@ -13,7 +13,7 @@ class AfterQuestionView extends Component {
                     <Text style={styles.message}>{message}</Text>
                 </View>
 
-                <TouchableOpacity onPress={pressCallback}>
+                <TouchableOpacity style={styles.okTouch} onPress={pressCallback}>
                     <View style={styles.okContainer}>
                         <Text style={styles.okText}>Ок</Text>
                     </View>

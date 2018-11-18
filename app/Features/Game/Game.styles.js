@@ -11,7 +11,14 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }, 
     afterQuestionPopup: {
-        
+        width: 276,
+        height: 130,
+        position: 'absolute',
+        left: 44,
+        top: 640,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 4
     },
     player: {
         width: 70,
